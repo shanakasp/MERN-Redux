@@ -7,7 +7,7 @@ function App() {
   return (
     <div className="App">
       <Header></Header>
-      <main style={{ minHeight: "93vh" }}>
+      <main>
         <LandingPage></LandingPage>
       </main>
 
