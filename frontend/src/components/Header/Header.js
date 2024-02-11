@@ -1,6 +1,6 @@
 import Brightness4Icon from "@mui/icons-material/Brightness4";
-import MenuIcon from "@mui/icons-material/Menu";
 import AppBar from "@mui/material/AppBar";
+import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import InputBase from "@mui/material/InputBase";
 import Menu from "@mui/material/Menu";
@@ -8,8 +8,9 @@ import MenuItem from "@mui/material/MenuItem";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
+import PopupState, { bindMenu, bindTrigger } from "material-ui-popup-state";
 import React, { useState } from "react";
-
+import "./Header.css";
 const Header = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [darkMode, setDarkMode] = useState(false);
@@ -44,31 +45,45 @@ const Header = () => {
             aria-controls="menu-appbar"
             aria-haspopup="true"
             onClick={handleMenu}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Menu
-            id="menu-appbar"
-            anchorEl={anchorEl}
-            anchorOrigin={{
-              vertical: "top",
-              horizontal: "right",
-            }}
-            keepMounted
-            transformOrigin={{
-              vertical: "top",
-              horizontal: "right",
-            }}
-            open={Boolean(anchorEl)}
-            onClose={handleClose}
-          >
-            <MenuItem onClick={handleClose}>Option 1</MenuItem>
-            <MenuItem onClick={handleClose}>Option 2</MenuItem>
-            <MenuItem onClick={handleClose}>Option 3</MenuItem>
-          </Menu>
+          ></IconButton>
+
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             My App
           </Typography>
+          <div>
+            <InputBase
+              placeholder="Search…"
+              inputProps={{ "aria-label": "search" }}
+            />
+          </div>
+          <PopupState variant="popover" popupId="demo-popup-menu">
+            {(popupState) => (
+              <React.Fragment>
+                <div className="name2">
+                  <Button variant="contained" {...bindTrigger(popupState)}>
+                    My note
+                  </Button>
+                </div>
+              </React.Fragment>
+            )}
+          </PopupState>
+          <PopupState variant="popover" popupId="demo-popup-menu">
+            {(popupState) => (
+              <React.Fragment>
+                <div className="name">
+                  <Button variant="contained" {...bindTrigger(popupState)}>
+                    Shanaka Prince
+                  </Button>
+                </div>
+
+                <Menu {...bindMenu(popupState)}>
+                  <MenuItem onClick={popupState.close}>Profile</MenuItem>
+                  <MenuItem onClick={popupState.close}>Log out</MenuItem>
+                </Menu>
+              </React.Fragment>
+            )}
+          </PopupState>
+
           <IconButton
             edge="end"
             color="inherit"
@@ -77,12 +92,6 @@ const Header = () => {
           >
             <Brightness4Icon />
           </IconButton>
-          <div>
-            <InputBase
-              placeholder="Search…"
-              inputProps={{ "aria-label": "search" }}
-            />
-          </div>
         </Toolbar>
       </AppBar>
     </ThemeProvider>
