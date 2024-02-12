@@ -54,51 +54,51 @@ const Header = () => {
               My App
             </Typography>
           </Link>
-
-          <div>
-            <InputBase
-              placeholder="Search…"
-              inputProps={{ "aria-label": "search" }}
-            />
-          </div>
-          <PopupState variant="popover" popupId="demo-popup-menu">
-            {(popupState) => (
-              <React.Fragment>
-                <div className="name2">
-                  <Link to="/mynotes">
+          <div className="headerrest">
+            <div>
+              <InputBase
+                placeholder="Search…"
+                inputProps={{ "aria-label": "search" }}
+              />
+            </div>
+            <PopupState variant="popover" popupId="demo-popup-menu">
+              {(popupState) => (
+                <React.Fragment>
+                  <div className="name2">
+                    <Link to="/mynotes">
+                      <Button variant="contained" {...bindTrigger(popupState)}>
+                        My note
+                      </Button>
+                    </Link>
+                  </div>
+                </React.Fragment>
+              )}
+            </PopupState>
+            <PopupState variant="popover" popupId="demo-popup-menu">
+              {(popupState) => (
+                <React.Fragment>
+                  <div className="name">
                     <Button variant="contained" {...bindTrigger(popupState)}>
-                      My note
+                      Shanaka Prince
                     </Button>
-                  </Link>
-                </div>
-              </React.Fragment>
-            )}
-          </PopupState>
-          <PopupState variant="popover" popupId="demo-popup-menu">
-            {(popupState) => (
-              <React.Fragment>
-                <div className="name">
-                  <Button variant="contained" {...bindTrigger(popupState)}>
-                    Shanaka Prince
-                  </Button>
-                </div>
+                  </div>
 
-                <Menu {...bindMenu(popupState)}>
-                  <MenuItem onClick={popupState.close}>Profile</MenuItem>
-                  <MenuItem onClick={popupState.close}>Log out</MenuItem>
-                </Menu>
-              </React.Fragment>
-            )}
-          </PopupState>
-
-          <IconButton
-            edge="end"
-            color="inherit"
-            aria-label="toggle-dark-mode"
-            onClick={toggleDarkMode}
-          >
-            <Brightness4Icon />
-          </IconButton>
+                  <Menu {...bindMenu(popupState)}>
+                    <MenuItem onClick={popupState.close}>Profile</MenuItem>
+                    <MenuItem onClick={popupState.close}>Log out</MenuItem>
+                  </Menu>
+                </React.Fragment>
+              )}
+            </PopupState>
+            <IconButton
+              edge="end"
+              color="inherit"
+              aria-label="toggle-dark-mode"
+              onClick={toggleDarkMode}
+            >
+              <Brightness4Icon />
+            </IconButton>
+          </div>
         </Toolbar>
       </AppBar>
     </ThemeProvider>

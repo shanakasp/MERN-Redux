@@ -5,3 +5,10 @@
 .name2 {
   margin-right: 20px;
 }
+
+.headerrest {
+  display: flex; /* Use flexbox */
+  justify-content: flex-end; /* Align containers to the right */
+  gap: 10px; /* Adjust the gap between containers */
+  margin-left: 25%;
+}
