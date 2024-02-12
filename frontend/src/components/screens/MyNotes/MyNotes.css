@@ -1,0 +1,17 @@
+/* MyNotes.css */
+.custom-button {
+  background-color: #1976d2; /* Default background color */
+  color: white; /* Default text color */
+  border-radius: 4px; /* Adjust border radius as needed */
+  margin-top: 10px;
+  padding: 10px 20px; /* Adjust padding as needed */
+  font-size: 13px; /* Adjust font size as needed */
+  /* Add more styles as needed */
+
+  /* Transition for smooth color change */
+  transition: background-color 0.3s;
+}
+
+.custom-button:hover {
+  background-color: #0d47a1; /* Dark blue color on hover */
+}
