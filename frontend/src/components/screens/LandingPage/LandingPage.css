@@ -1,0 +1,40 @@
+.main {
+  min-height: 100vh; /* Changed to 100vh for better mobile responsiveness */
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Center horizontally */
+  background-image: url("../../../../public/background1.jpg");
+  background-position: center;
+  background-size: cover;
+}
+
+.intro-name {
+  text-align: center;
+  margin: 0 auto; /* Center horizontally */
+  max-width: 80%; /* Adjusted to 80% for better mobile responsiveness */
+  margin-bottom: 30%;
+}
+
+.intro-name h1 {
+  font-size: 3rem; /* Adjusted font size for mobile */
+}
+
+.intro-name p {
+  font-size: 1.2rem; /* Adjusted font size for mobile */
+}
+
+.buttonContainer {
+  display: flex;
+  justify-content: center;
+  margin-top: 50px;
+  row-gap: 10px;
+}
+
+.button {
+  margin: 0 25px;
+}
+
+/* Hover Effects */
+.button:hover {
+  opacity: 0.8;
+}

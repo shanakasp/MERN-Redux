@@ -10,6 +10,7 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import PopupState, { bindMenu, bindTrigger } from "material-ui-popup-state";
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import "./Header.css";
 const Header = () => {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -60,9 +61,11 @@ const Header = () => {
             {(popupState) => (
               <React.Fragment>
                 <div className="name2">
-                  <Button variant="contained" {...bindTrigger(popupState)}>
-                    My note
-                  </Button>
+                  <Link to="/mynotes">
+                    <Button variant="contained" {...bindTrigger(popupState)}>
+                      My note
+                    </Button>
+                  </Link>
                 </div>
               </React.Fragment>
             )}
