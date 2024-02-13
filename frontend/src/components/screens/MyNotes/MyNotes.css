@@ -15,3 +15,7 @@
 .custom-button:hover {
   background-color: #0d47a1; /* Dark blue color on hover */
 }
+
+.Cardcomponents {
+  margin: 10px;
+}
