@@ -1,10 +1,23 @@
-import { Button } from "@mui/material";
-import React from "react";
-import { Card } from "react-bootstrap";
+import { Button, Collapse } from "@mui/material";
+import React, { useState } from "react";
+import { Badge, Card } from "react-bootstrap";
+import { Link } from "react-router-dom";
 import MainScreen from "../../MainScreen";
 import notes from "./notes";
 
 const MyNotes = () => {
+  const [openNoteId, setOpenNoteId] = useState(null);
+
+  const deleteHandler = (_id) => {
+    if (window.confirm("Are you sure you want to delete")) {
+      // Add logic here to delete the note
+    }
+  };
+
+  const handleNoteClick = (_id) => {
+    setOpenNoteId(openNoteId === _id ? null : _id);
+  };
+
   return (
     <MainScreen title="Welcome Back">
       <Button
@@ -24,26 +37,31 @@ const MyNotes = () => {
         {notes.map((note, index) => (
           <Card
             key={note._id}
-            style={{ marginBottom: index !== notes.length - 1 ? "20px" : 0 }}
+            style={{
+              marginBottom: index !== notes.length - 1 ? "20px" : 0,
+              cursor: "pointer",
+            }}
           >
             <Card.Header
               style={{ display: "flex", justifyContent: "space-between" }}
+              onClick={() => handleNoteClick(note._id)}
             >
               <span>{note.title}</span>
               <div className="buttons">
-                <Button
-                  style={{
-                    backgroundColor: "green",
-                    color: "white",
-                    borderRadius: "4px",
-                    padding: "8px 16px",
-                    fontSize: "13px",
-                    margin: "0 5px",
-                  }}
-                  variant="contained"
-                >
-                  Edit
-                </Button>
+                <Link to={`/note/${note._id}`}>
+                  <button
+                    style={{
+                      backgroundColor: "green",
+                      color: "white",
+                      borderRadius: "4px",
+                      padding: "8px 16px",
+                      fontSize: "13px",
+                      margin: "0 5px",
+                    }}
+                  >
+                    Edit
+                  </button>
+                </Link>
                 <Button
                   style={{
                     backgroundColor: "red",
@@ -54,16 +72,23 @@ const MyNotes = () => {
                     margin: "0 5px",
                   }}
                   variant="contained"
+                  onClick={() => deleteHandler(note._id)}
                 >
                   Delete
                 </Button>
               </div>
             </Card.Header>
-            <Card.Body>
-              <Card.Title>{note.title}</Card.Title>
-              <Card.Text>{note.content}</Card.Text>
-              <Card.Footer>Category: {note.category}</Card.Footer>
-            </Card.Body>
+            <Collapse in={openNoteId === note._id}>
+              <Card.Body>
+                <h4>
+                  <Badge className="mb-2" variant="secondary">
+                    Category - {note.category}
+                  </Badge>
+                </h4>
+                <Card.Text>{note.content}</Card.Text>
+                <Card.Footer>Created On -Date</Card.Footer>
+              </Card.Body>
+            </Collapse>
           </Card>
         ))}
       </div>
