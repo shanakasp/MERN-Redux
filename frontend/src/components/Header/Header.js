@@ -12,6 +12,7 @@ import PopupState, { bindMenu, bindTrigger } from "material-ui-popup-state";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "./Header.css";
+
 const Header = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [darkMode, setDarkMode] = useState(false);
@@ -37,34 +38,37 @@ const Header = () => {
   return (
     <ThemeProvider theme={theme}>
       <AppBar position="static">
-        <Toolbar>
-          <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            aria-controls="menu-appbar"
-            aria-haspopup="true"
-            onClick={handleMenu}
-          ></IconButton>
+        <Toolbar style={{ display: "flex", justifyContent: "space-between" }}>
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <IconButton
+              size="large"
+              edge="start"
+              color="inherit"
+              aria-label="menu"
+              aria-controls="menu-appbar"
+              aria-haspopup="true"
+              onClick={handleMenu}
+            ></IconButton>
 
-          <Link to={"/"}>
-            {" "}
-            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-              My App
-            </Typography>
-          </Link>
-          <div className="headerrest">
-            <div>
-              <InputBase
-                placeholder="Search…"
-                inputProps={{ "aria-label": "search" }}
-              />
-            </div>
-            <PopupState variant="popover" popupId="demo-popup-menu">
+            <Link to={"/"}>
+              {" "}
+              <Typography variant="h6" component="div">
+                My App
+              </Typography>
+            </Link>
+          </div>
+
+          <InputBase
+            placeholder="Search…"
+            inputProps={{ "aria-label": "search" }}
+            style={{ marginLeft: "auto", marginRight: "auto" }}
+          />
+
+          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            <PopupState variant="popover" popupId="demo-popup-menu1">
               {(popupState) => (
                 <React.Fragment>
-                  <div className="name2">
+                  <div>
                     <Link to="/mynotes">
                       <Button variant="contained" {...bindTrigger(popupState)}>
                         My note
@@ -74,10 +78,10 @@ const Header = () => {
                 </React.Fragment>
               )}
             </PopupState>
-            <PopupState variant="popover" popupId="demo-popup-menu">
+            <PopupState variant="popover" popupId="demo-popup-menu2">
               {(popupState) => (
                 <React.Fragment>
-                  <div className="name">
+                  <div>
                     <Button variant="contained" {...bindTrigger(popupState)}>
                       Shanaka Prince
                     </Button>
