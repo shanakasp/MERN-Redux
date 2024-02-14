@@ -1,5 +1,7 @@
 import { Button, Collapse } from "@mui/material";
-import React, { useState } from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+
 import { Badge, Card } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import MainScreen from "../../MainScreen";
@@ -17,6 +19,16 @@ const MyNotes = () => {
   const handleNoteClick = (_id) => {
     setOpenNoteId(openNoteId === _id ? null : _id);
   };
+
+  const fetchNotes = async () => {
+    const data = await axios.get("http://localhost:5000/api/notes");
+
+    console.log(data);
+  };
+
+  useEffect(() => {
+    fetchNotes();
+  }, []);
 
   return (
     <MainScreen title="Welcome Back">
