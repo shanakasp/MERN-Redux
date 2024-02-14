@@ -3,7 +3,12 @@ const cors = require("cors");
 const notes = require("./data/notes");
 const app = express();
 const dotenv = require("dotenv");
+require("dotenv").config();
+
+const connectDB = require("./config/db");
 dotenv.config();
+
+connectDB();
 
 // Middleware function to log requests to the terminal
 app.use((req, res, next) => {
