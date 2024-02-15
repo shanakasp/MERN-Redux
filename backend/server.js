@@ -9,6 +9,7 @@ dotenv.config(); // Load environment variables
 const app = express();
 
 app.use(express.json());
+
 // Middleware function to log requests to the terminal
 app.use((req, res, next) => {
   console.log(`${req.method} ${req.url}`);
