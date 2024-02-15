@@ -31,7 +31,10 @@ const registerUser = (req, res) => {
 
   users.push(newUser);
 
-  res.status(201).json(newUser);
+  // Response object with only name and email properties
+  const responseUser = { name, email };
+
+  res.status(201).json(responseUser);
 };
 
 // Update user by ID
