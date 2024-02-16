@@ -22,12 +22,22 @@ const getUserById = (req, res) => {
 const registerUser = asyncHandler(async (req, res) => {
   // In a real application, you would validate the request body before creating the user
   const { name, email, password, pic } = req.body;
+  const userExists = await User.findOne({ email });
+
+  if (userExists) {
+    return res.status(400).json({ message: "User already exists" });
+  }
+  {
+    const user = await User.create({ name, email, password, pic });
+    res.status(200).json(user);
+  }
+
   const newUser = { name, email, password, pic };
 
   users.push(newUser);
 
   // Response object with only name and email properties
-  const responseUser = { name, email };
+  const responseUser = { _id, name, email };
 
   res.status(201).json(responseUser);
 });
