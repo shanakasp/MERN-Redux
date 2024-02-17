@@ -4,13 +4,16 @@ import TextField from "@mui/material/TextField";
 import axios from "axios";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import ErrorMessage from "../../ErrorMessage";
+import Loading from "../../Loading";
+import Success from "../../Success";
 
 const LoginScreen = () => {
   const [email, setEmail] = useState(""); // State to store email
   const [password, setPassword] = useState(""); // State to store password
   const [loading, setLoading] = useState(false); // State to manage loading state
   const [error, setError] = useState(null); // State to manage errors
-  const [userData, setUserData] = useState(null); // State to store user data
+  const [successMessage, setSuccessMessage] = useState(""); // State to manage success message
 
   const handleEmailChange = (event) => {
     setEmail(event.target.value);
@@ -21,8 +24,8 @@ const LoginScreen = () => {
   };
 
   const handleLogin = async () => {
-    setLoading(true); // Set loading to true
-    setError(null); // Clear any previous errors
+    setLoading(true);
+    setError(null);
 
     try {
       const response = await axios.post(
@@ -30,85 +33,106 @@ const LoginScreen = () => {
         { email, password }
       );
 
-      setUserData(response.data); // Set user data in state
-
-      console.log("Login successful:", response.data);
+      const userData = response.data;
+      localStorage.setItem("userInfo", JSON.stringify(userData));
+      setSuccessMessage("Login successful!"); // Set success message
+      console.log("Login successful:", userData);
     } catch (error) {
-      setError(error.message); // Set error message in state
-      console.error("Login error:", error.message);
+      if (error.response) {
+        // The request was made and the server responded with a status code
+        if (error.response.status === 401) {
+          setError("Invalid email or password"); // Set custom error message for 401 status
+        } else {
+          setError("An error occurred. Please try again later."); // Generic error message for other status codes
+        }
+      } else if (error.request) {
+        // The request was made but no response was received
+        setError("No response from server. Please try again later.");
+      } else {
+        // Something happened in setting up the request that triggered an error
+        setError("An error occurred. Please check your internet connection.");
+      }
+      console.error("Login error:", error);
     } finally {
-      setLoading(false); // Set loading to false after request completes
+      setLoading(false);
     }
   };
 
   return (
-    <Box
-      display="flex"
-      marginTop="30px"
-      justifyContent="center"
-      alignItems="flex-start"
-      minHeight="calc(65vh )"
-    >
-      <Box width="300px" textAlign="center">
-        <Typography variant="h4" gutterBottom>
-          Login Screen
-        </Typography>
-        <form>
-          <TextField
-            id="email"
-            label="Email"
-            variant="outlined"
-            fullWidth
-            margin="normal"
-            value={email}
-            onChange={handleEmailChange}
-          />
-          <TextField
-            id="password"
-            label="Password"
-            type="password"
-            variant="outlined"
-            fullWidth
-            margin="normal"
-            value={password}
-            onChange={handlePasswordChange}
-          />
-          <Button
-            variant="contained"
-            color="success"
-            fullWidth
-            sx={{ mt: 2 }}
-            onClick={handleLogin}
-            disabled={loading} // Disable button when loading
-          >
-            {loading ? "Loading..." : "Login"}{" "}
-            {/* Change button text based on loading state */}
-          </Button>
-        </form>
-        {error && <Typography color="error">{error}</Typography>}{" "}
-        {/* Display error message if present */}
-        {userData && ( // Display user data if available
-          <Box mt={2}>
-            <Typography variant="h6">User Data:</Typography>
-            <pre>{JSON.stringify(userData, null, 2)}</pre>
-          </Box>
-        )}
-        <Box mt={2} textAlign="center">
-          <Typography variant="h6" gutterBottom>
-            New to the site?
+    <div className="logging">
+      <Box
+        display="flex"
+        marginTop="30px"
+        justifyContent="center"
+        alignItems="flex-start"
+        minHeight="calc(65vh )"
+      >
+        <Box width="300px" textAlign="center">
+          <Typography variant="h4" gutterBottom>
+            Login Screen
           </Typography>
-          <Button
-            variant="contained"
-            color="primary"
-            component={Link}
-            to="/register"
-            sx={{ mt: 1, boxShadow: "1px 1px 2px rgba(0,0,0,0.2)" }}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center", // Center items horizontally
+              alignItems: "center", // Center items vertically
+            }}
           >
-            Click here to register
-          </Button>
+            {/* Loading component will be centered */}
+            {loading && <Loading />}
+            {error && <ErrorMessage message={error} />}
+            {successMessage && <Success message={successMessage} />}
+          </div>
+          <form>
+            <TextField
+              id="email"
+              label="Email"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              value={email}
+              onChange={handleEmailChange}
+            />
+            <TextField
+              id="password"
+              label="Password"
+              type="password"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              value={password}
+              onChange={handlePasswordChange}
+            />
+            <Button
+              variant="contained"
+              color="success"
+              fullWidth
+              sx={{ mt: 2 }}
+              onClick={handleLogin}
+              disabled={loading} // Disable button when loading
+            >
+              {loading ? "Loading..." : "Login"}{" "}
+              {/* Change button text based on loading state */}
+            </Button>
+          </form>
+
+          <Box mt={2} textAlign="center">
+            <Typography variant="h6" gutterBottom>
+              New to the site?
+            </Typography>
+            <Button
+              variant="contained"
+              color="primary"
+              component={Link}
+              to="/register"
+              sx={{ mt: 1, boxShadow: "1px 1px 2px rgba(0,0,0,0.2)" }}
+            >
+              Click here to register
+            </Button>
+          </Box>
         </Box>
       </Box>
-    </Box>
+    </div>
   );
 };
 
