@@ -27,18 +27,10 @@ const registerUser = asyncHandler(async (req, res) => {
   if (userExists) {
     return res.status(400).json({ message: "User already exists" });
   }
-  {
-    const user = await User.create({ name, email, password, pic });
-    res.status(200).json(user);
-  }
 
-  const newUser = { name, email, password, pic };
-
-  users.push(newUser);
-
+  const user = await User.create({ name, email, password, pic });
   // Response object with only name and email properties
-  const responseUser = { _id, name, email };
-
+  const responseUser = { _id: user._id, name: user.name, email: user.email };
   res.status(201).json(responseUser);
 });
 
