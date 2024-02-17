@@ -1,12 +1,16 @@
 import { Box, Typography } from "@mui/material";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
+import axios from "axios";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 const LoginScreen = () => {
   const [email, setEmail] = useState(""); // State to store email
   const [password, setPassword] = useState(""); // State to store password
+  const [loading, setLoading] = useState(false); // State to manage loading state
+  const [error, setError] = useState(null); // State to manage errors
+  const [userData, setUserData] = useState(null); // State to store user data
 
   const handleEmailChange = (event) => {
     setEmail(event.target.value);
@@ -16,10 +20,25 @@ const LoginScreen = () => {
     setPassword(event.target.value);
   };
 
-  const handleLogin = () => {
-    console.log("Email:", email, "Password:", password);
+  const handleLogin = async () => {
+    setLoading(true); // Set loading to true
+    setError(null); // Clear any previous errors
 
-    // Perform login logic here
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/users/login",
+        { email, password }
+      );
+
+      setUserData(response.data); // Set user data in state
+
+      console.log("Login successful:", response.data);
+    } catch (error) {
+      setError(error.message); // Set error message in state
+      console.error("Login error:", error.message);
+    } finally {
+      setLoading(false); // Set loading to false after request completes
+    }
   };
 
   return (
@@ -27,8 +46,8 @@ const LoginScreen = () => {
       display="flex"
       marginTop="30px"
       justifyContent="center"
-      alignItems="flex-start" // Align items to the top
-      minHeight="calc(65vh )" // Adjusted gin top added to center vertically
+      alignItems="flex-start"
+      minHeight="calc(65vh )"
     >
       <Box width="300px" textAlign="center">
         <Typography variant="h4" gutterBottom>
@@ -60,23 +79,30 @@ const LoginScreen = () => {
             fullWidth
             sx={{ mt: 2 }}
             onClick={handleLogin}
+            disabled={loading} // Disable button when loading
           >
-            Login
+            {loading ? "Loading..." : "Login"}{" "}
+            {/* Change button text based on loading state */}
           </Button>
         </form>
+        {error && <Typography color="error">{error}</Typography>}{" "}
+        {/* Display error message if present */}
+        {userData && ( // Display user data if available
+          <Box mt={2}>
+            <Typography variant="h6">User Data:</Typography>
+            <pre>{JSON.stringify(userData, null, 2)}</pre>
+          </Box>
+        )}
         <Box mt={2} textAlign="center">
-          {/* Added a container for better spacing */}
-          <div className="newtothesite" style={{ textAlign: "left" }}>
-            <Typography variant="h6" gutterBottom>
-              New to the site?
-            </Typography>
-          </div>
+          <Typography variant="h6" gutterBottom>
+            New to the site?
+          </Typography>
           <Button
             variant="contained"
             color="primary"
             component={Link}
             to="/register"
-            sx={{ mt: 1, boxShadow: "1px 1px 2px rgba(0,0,0,0.2)" }} // Added box shadow
+            sx={{ mt: 1, boxShadow: "1px 1px 2px rgba(0,0,0,0.2)" }}
           >
             Click here to register
           </Button>
