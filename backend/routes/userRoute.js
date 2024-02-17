@@ -12,6 +12,7 @@ router.get("/:id", (req, res) => {
 });
 
 router.post("/", userController.registerUser);
+router.post("/login", userController.authUser);
 
 router.put("/:id", (req, res) => {
   // Logic for updating a user

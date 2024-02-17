@@ -1,22 +1,24 @@
 const User = require("../models/userModel");
 const asyncHandler = require("express-async-handler");
+const bcrypt = require("bcryptjs");
+const generateToken = require("../utils/generateToken");
 
 // Get all users
 const getAllUsers = (req, res) => {
   res.json(users);
 };
 
-// Get user by ID
-const getUserById = (req, res) => {
-  const userId = parseInt(req.params.id);
-  const user = users.find((user) => user.id === userId);
+// // Get user by ID
+// const getUserById = (req, res) => {
+//   const userId = parseInt(req.params.id);
+//   const user = users.find((user) => user.id === userId);
 
-  if (!user) {
-    return res.status(404).json({ message: "User not found" });
-  }
+//   if (!user) {
+//     return res.status(404).json({ message: "User not found" });
+//   }
 
-  res.json(user);
-};
+//   res.json(user);
+// };
 
 // Create a new user
 const registerUser = asyncHandler(async (req, res) => {
@@ -30,24 +32,48 @@ const registerUser = asyncHandler(async (req, res) => {
 
   const user = await User.create({ name, email, password, pic });
   // Response object with only name and email properties
-  const responseUser = { _id: user._id, name: user.name, email: user.email };
+  const responseUser = {
+    _id: user._id,
+    name: user.name,
+    email: user.email,
+    pic: user._id,
+    token: generateToken(user._id),
+  };
   res.status(201).json(responseUser);
 });
 
-// Update user by ID
-const updateUserById = (req, res) => {
-  const userId = parseInt(req.params.id);
-  const userIndex = users.findIndex((user) => user.id === userId);
+// Controller function to authenticate user
+const authUser = asyncHandler(async (req, res) => {
+  const { email, password } = req.body;
 
-  if (userIndex === -1) {
-    return res.status(404).json({ message: "User not found" });
+  // Find user by email
+  const user = await User.findOne({ email });
+
+  // If user doesn't exist, return error
+  if (!user) {
+    return res
+      .status(401)
+      .json({ message: "User with this email does not exist" });
   }
 
-  const { name, email } = req.body;
-  users[userIndex] = { ...users[userIndex], name, email };
+  // Check if the provided password matches the stored password using bcrypt
+  const isPasswordValid = await bcrypt.compare(password, user.password);
 
-  res.json(users[userIndex]);
-};
+  // If password is incorrect, return error
+  if (!isPasswordValid) {
+    return res.status(401).json({ message: "Invalid password" });
+  }
+
+  // Return user data and token
+  res.json({
+    _id: user._id,
+    name: user.name,
+    email: user.email,
+    isAdmin: user.isAdmin,
+    pic: user.pic,
+    token: generateToken(user._id),
+  });
+});
 
 // Delete user by ID
 const deleteUserById = (req, res) => {
@@ -64,8 +90,9 @@ const deleteUserById = (req, res) => {
 
 module.exports = {
   getAllUsers,
-  getUserById,
+  // getUserById,
   registerUser,
-  updateUserById,
+  authUser,
+  // updateUserById,
   deleteUserById,
 };
