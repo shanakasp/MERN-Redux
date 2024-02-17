@@ -1,10 +1,27 @@
 import { Box, Typography } from "@mui/material";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 const LoginScreen = () => {
+  const [email, setEmail] = useState(""); // State to store email
+  const [password, setPassword] = useState(""); // State to store password
+
+  const handleEmailChange = (event) => {
+    setEmail(event.target.value);
+  };
+
+  const handlePasswordChange = (event) => {
+    setPassword(event.target.value);
+  };
+
+  const handleLogin = () => {
+    console.log("Email:", email, "Password:", password);
+
+    // Perform login logic here
+  };
+
   return (
     <Box
       display="flex"
@@ -24,6 +41,8 @@ const LoginScreen = () => {
             variant="outlined"
             fullWidth
             margin="normal"
+            value={email}
+            onChange={handleEmailChange}
           />
           <TextField
             id="password"
@@ -32,13 +51,20 @@ const LoginScreen = () => {
             variant="outlined"
             fullWidth
             margin="normal"
+            value={password}
+            onChange={handlePasswordChange}
           />
-          <Button variant="contained" color="success" fullWidth sx={{ mt: 2 }}>
+          <Button
+            variant="contained"
+            color="success"
+            fullWidth
+            sx={{ mt: 2 }}
+            onClick={handleLogin}
+          >
             Login
           </Button>
         </form>
         <Box mt={2} textAlign="center">
-          {" "}
           {/* Added a container for better spacing */}
           <div className="newtothesite" style={{ textAlign: "left" }}>
             <Typography variant="h6" gutterBottom>
