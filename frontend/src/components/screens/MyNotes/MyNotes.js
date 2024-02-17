@@ -1,14 +1,13 @@
 import { Button, Collapse } from "@mui/material";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-
 import { Badge, Card } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import MainScreen from "../../MainScreen";
-import notes from "./notes";
 
 const MyNotes = () => {
   const [openNoteId, setOpenNoteId] = useState(null);
+  const [notes, setNotes] = useState([]);
 
   const deleteHandler = (_id) => {
     if (window.confirm("Are you sure you want to delete")) {
@@ -21,10 +20,15 @@ const MyNotes = () => {
   };
 
   const fetchNotes = async () => {
-    const data = await axios.get("http://localhost:5000/api/notes");
-
-    console.log(data);
+    try {
+      const response = await axios.get("http://localhost:5000/api/notes");
+      setNotes(response.data); // Update the notes state with response.data
+    } catch (error) {
+      console.error("Error fetching notes:", error);
+    }
   };
+
+  console.log(notes);
 
   useEffect(() => {
     fetchNotes();
