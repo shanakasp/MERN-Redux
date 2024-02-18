@@ -71,9 +71,9 @@ const RegisterScreen = () => {
         ...prevError,
         confirmPassword: true,
       }));
+      setMessage("Passwords do not match.");
       return;
     }
-
     setLoading(true);
     try {
       const response = await axios.post("http://localhost:5000/api/users", {
@@ -104,10 +104,13 @@ const RegisterScreen = () => {
   return (
     <MainScreen title="REGISTER">
       {loading && <Loading />}
-      {error.name || error.email || error.password || error.confirmPassword ? (
-        <ErrorMessage message="Please fill out all fields correctly." />
-      ) : null}
+      {(error.name || error.email || error.password || error.confirmPassword) &&
+        !error.password && (
+          <ErrorMessage message="Please fill out all fields correctly." />
+        )}
+      {error.password && <ErrorMessage message="Passwords do not match." />}
       {successMessage && <Success message={successMessage} />}
+
       <Box
         display="flex"
         flexDirection="column"
