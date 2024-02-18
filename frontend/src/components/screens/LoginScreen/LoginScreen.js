@@ -3,7 +3,7 @@ import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import axios from "axios";
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ErrorMessage from "../../ErrorMessage";
 import Loading from "../../Loading";
 import Success from "../../Success";
@@ -14,6 +14,7 @@ const LoginScreen = () => {
   const [loading, setLoading] = useState(false); // State to manage loading state
   const [error, setError] = useState(null); // State to manage errors
   const [successMessage, setSuccessMessage] = useState(""); // State to manage success message
+  const navigate = useNavigate(); // Hook for navigation
 
   const handleEmailChange = (event) => {
     setEmail(event.target.value);
@@ -37,6 +38,11 @@ const LoginScreen = () => {
       localStorage.setItem("userInfo", JSON.stringify(userData));
       setSuccessMessage("Login successful!"); // Set success message
       console.log("Login successful:", userData);
+
+      // Navigate to "/mynotes" after 2 seconds
+      setTimeout(() => {
+        navigate("/mynotes");
+      }, 2000);
     } catch (error) {
       if (error.response) {
         // The request was made and the server responded with a status code
