@@ -1,4 +1,3 @@
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { Box, Button, TextField, Typography } from "@mui/material";
 import axios from "axios";
 import { useState } from "react";
@@ -14,9 +13,7 @@ const RegisterScreen = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [message, setMessage] = useState("");
-  const [pic, setPic] = useState(
-    "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25"
-  );
+  const [pic, setPic] = useState(null);
   const [picMessage, setPicMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState({
@@ -29,7 +26,6 @@ const RegisterScreen = () => {
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-    // Reset error for the field being edited
     setError((prevError) => ({ ...prevError, [name]: null }));
 
     if (name === "name") setName(value);
@@ -41,12 +37,10 @@ const RegisterScreen = () => {
   const handlePicChange = (event) => {
     const file = event.target.files[0];
     if (file) {
-      setPic(URL.createObjectURL(file));
+      setPic(file);
       setPicMessage("Image selected");
     } else {
-      setPic(
-        "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25"
-      );
+      setPic(null);
       setPicMessage("No image selected");
     }
   };
@@ -61,7 +55,6 @@ const RegisterScreen = () => {
       confirmPassword: !confirmPassword,
     });
 
-    // Validate fields
     if (!name || !email || !password || !confirmPassword) {
       return;
     }
@@ -71,18 +64,31 @@ const RegisterScreen = () => {
         ...prevError,
         confirmPassword: true,
       }));
+      setMessage("Passwords do not match.");
       return;
     }
-
     setLoading(true);
+
     try {
-      const response = await axios.post("http://localhost:5000/api/users", {
+      const formData = new FormData();
+      formData.append("file", pic);
+      formData.append("upload_preset", "MernRedux");
+      const response = await axios.post(
+        "https://api.cloudinary.com/v1_1/dbiqgfnkt/image/upload",
+        formData
+      );
+
+      // Extracting the URL of the uploaded image from the response
+      const imageUrl = response.data.secure_url;
+
+      const userResponse = await axios.post("http://localhost:5000/api/users", {
         name,
         email,
         password,
-        pic,
+        pic: imageUrl, // Save the image URL instead of the asset ID
       });
-      console.log(response.data);
+
+      console.log(name, email, password, imageUrl);
       setSuccessMessage("User registered successfully!");
     } catch (error) {
       console.error("Registration error:", error);
@@ -104,10 +110,13 @@ const RegisterScreen = () => {
   return (
     <MainScreen title="REGISTER">
       {loading && <Loading />}
-      {error.name || error.email || error.password || error.confirmPassword ? (
-        <ErrorMessage message="Please fill out all fields correctly." />
-      ) : null}
+      {(error.name || error.email || error.password || error.confirmPassword) &&
+        !error.password && (
+          <ErrorMessage message="Please fill out all fields correctly." />
+        )}
+      {error.password && <ErrorMessage message="Passwords do not match." />}
       {successMessage && <Success message={successMessage} />}
+
       <Box
         display="flex"
         flexDirection="column"
@@ -166,11 +175,7 @@ const RegisterScreen = () => {
             error={error.confirmPassword}
           />
           <div style={{ marginTop: "15px" }}>
-            <Button
-              component="label"
-              variant="contained"
-              startIcon={<CloudUploadIcon />}
-            >
+            <Button component="label" variant="contained">
               Upload profile picture
               <input
                 type="file"
