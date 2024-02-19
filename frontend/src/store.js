@@ -1,7 +1,7 @@
-import { combineReducers } from "redux";
-import thunk from "redux-thunk";
-
 import { configureStore } from "@reduxjs/toolkit";
+import { combineReducers } from "redux";
+import { composeWithDevTools } from "redux-devtools-extension";
+import { thunk } from "redux-thunk";
 
 // Import your reducers here
 // Example:
@@ -13,14 +13,15 @@ const rootReducer = combineReducers({
   // Add your reducers here
 });
 
-const initialState = {};
-
+// Manually include redux-thunk middleware in the middleware array
 const middleware = [thunk];
 
 const store = configureStore({
   reducer: rootReducer,
-  middleware: [...middleware],
-  preloadedState: initialState,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(middleware),
+  devTools: process.env.NODE_ENV !== "production", // Enable Redux DevTools in development
+  enhancers: (defaultEnhancers) => composeWithDevTools(...defaultEnhancers), // Enhance store with Redux DevTools Extension
 });
 
 export default store;
