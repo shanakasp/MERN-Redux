@@ -10,10 +10,12 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import PopupState, { bindMenu, bindTrigger } from "material-ui-popup-state";
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./Header.css";
 
 const Header = () => {
+  const navigate = useNavigate();
+
   const [anchorEl, setAnchorEl] = useState(null);
   const [darkMode, setDarkMode] = useState(false);
 
@@ -89,7 +91,14 @@ const Header = () => {
 
                   <Menu {...bindMenu(popupState)}>
                     <MenuItem onClick={popupState.close}>Profile</MenuItem>
-                    <MenuItem onClick={popupState.close}>Log out</MenuItem>
+                    <MenuItem
+                      onClick={() => {
+                        localStorage.removeItem("userInfo");
+                        navigate("/login");
+                      }}
+                    >
+                      Log out
+                    </MenuItem>
                   </Menu>
                 </React.Fragment>
               )}
